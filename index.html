@@ -7,7 +7,6 @@ const ImageUploader = ({ onImageSelect, currentImage }) => {
   const handleFileSelect = useCallback((event) => {
     const file = event.target.files[0];
     if (file) {
-      // Create a preview URL for immediate display
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result);
@@ -18,18 +17,18 @@ const ImageUploader = ({ onImageSelect, currentImage }) => {
   }, [onImageSelect]);
 
   return (
-    <div className="w-full max-w-xs mx-auto">
-      <div className="flex flex-col items-center space-y-4">
+    <div className="mb-4">
+      <div className="flex items-center gap-4">
         {previewUrl && (
           <img 
             src={previewUrl} 
             alt="Preview" 
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+            className="w-12 h-12 rounded-full object-cover"
           />
         )}
-        <label className="flex flex-col items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg tracking-wide border border-blue cursor-pointer hover:bg-blue-600">
-          <Upload className="w-6 h-6" />
-          <span className="mt-2 text-sm">Select Image</span>
+        <label className="flex items-center px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600">
+          <Upload className="w-4 h-4 mr-2" />
+          <span>Select Image</span>
           <input
             type="file"
             className="hidden"
@@ -57,74 +56,81 @@ const SocialProfileEditor = () => {
     }
   }, [currentProfile]);
 
-  const handleImageSelect = useCallback((file) => {
-    setCurrentProfile(prev => ({ ...prev, image: file }));
+  const handleRemoveProfile = useCallback((index) => {
+    setProfiles(prev => prev.filter((_, i) => i !== index));
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-6">Social Media Profiles</h2>
+    <div className="max-w-2xl mx-auto p-4">
+      <div className="bg-white rounded shadow p-6">
+        <h2 className="text-xl font-bold mb-6">Social Media Profiles</h2>
         
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4">
-            <select 
-              value={currentProfile.platform}
-              onChange={(e) => setCurrentProfile(prev => ({ ...prev, platform: e.target.value }))}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Select Platform</option>
-              <option value="youtube">YouTube</option>
-              <option value="facebook">Facebook</option>
-              <option value="twitter">Twitter/X</option>
-              <option value="instagram">Instagram</option>
-              <option value="linkedin">LinkedIn</option>
-              <option value="tiktok">TikTok</option>
-              <option value="github">GitHub</option>
-            </select>
+        <div className="space-y-4 mb-6">
+          <select 
+            value={currentProfile.platform}
+            onChange={(e) => setCurrentProfile(prev => ({ ...prev, platform: e.target.value }))}
+            className="w-full p-2 border rounded bg-white"
+          >
+            <option value="">Select Platform</option>
+            <option value="youtube">YouTube</option>
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter/X</option>
+            <option value="instagram">Instagram</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="tiktok">TikTok</option>
+            <option value="github">GitHub</option>
+          </select>
 
-            <input
-              type="url"
-              value={currentProfile.url}
-              onChange={(e) => setCurrentProfile(prev => ({ ...prev, url: e.target.value }))}
-              placeholder="Profile URL"
-              className="w-full p-2 border rounded"
-            />
+          <input
+            type="url"
+            value={currentProfile.url}
+            onChange={(e) => setCurrentProfile(prev => ({ ...prev, url: e.target.value }))}
+            placeholder="Profile URL"
+            className="w-full p-2 border rounded"
+          />
 
-            <ImageUploader 
-              onImageSelect={handleImageSelect}
-              currentImage={currentProfile.image}
-            />
+          <ImageUploader 
+            onImageSelect={(file) => setCurrentProfile(prev => ({ ...prev, image: file }))}
+            currentImage={currentProfile.image ? URL.createObjectURL(currentProfile.image) : null}
+          />
 
-            <button
-              onClick={handleAddProfile}
-              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-            >
-              Add Profile
-            </button>
-          </div>
+          <button
+            onClick={handleAddProfile}
+            disabled={!currentProfile.platform || !currentProfile.url}
+            className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Add Profile
+          </button>
+        </div>
 
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4">Added Profiles</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {profiles.map((profile, index) => (
-                <div key={index} className="border rounded-lg p-4 flex items-center space-x-4">
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4">Added Profiles</h3>
+          <div className="space-y-3">
+            {profiles.map((profile, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div className="flex items-center gap-3">
                   {profile.image && (
                     <img 
                       src={URL.createObjectURL(profile.image)}
                       alt={profile.platform}
-                      className="w-16 h-16 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover"
                     />
                   )}
                   <div>
-                    <h4 className="font-semibold">{profile.platform}</h4>
-                    <a href={profile.url} className="text-blue-500 text-sm truncate block" target="_blank" rel="noopener noreferrer">
+                    <div className="font-medium">{profile.platform}</div>
+                    <a href={profile.url} className="text-sm text-blue-500 hover:underline truncate max-w-xs block" target="_blank" rel="noopener noreferrer">
                       {profile.url}
                     </a>
                   </div>
                 </div>
-              ))}
-            </div>
+                <button
+                  onClick={() => handleRemoveProfile(index)}
+                  className="text-red-500 hover:text-red-600 p-1"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
