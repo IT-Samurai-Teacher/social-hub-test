@@ -1,99 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Social Media Profile Editor</title>
-    <style>
-        /* Styles remain the same */
-    </style>
-</head>
-<body>
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic" id="profile-picture">
-        <h2 id="profile-name">Your Name</h2> 
-        <a href="#" class="support-btn" id="support-link">Support Me</a> 
+import React, { useState, useCallback } from 'react';
+import { Upload } from 'lucide-react';
+
+const ImageUploader = ({ onImageSelect, currentImage }) => {
+  const [previewUrl, setPreviewUrl] = useState(currentImage || '');
+
+  const handleFileSelect = useCallback((event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Create a preview URL for immediate display
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+        onImageSelect(file);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [onImageSelect]);
+
+  return (
+    <div className="w-full max-w-xs mx-auto">
+      <div className="flex flex-col items-center space-y-4">
+        {previewUrl && (
+          <img 
+            src={previewUrl} 
+            alt="Preview" 
+            className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+          />
+        )}
+        <label className="flex flex-col items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg tracking-wide border border-blue cursor-pointer hover:bg-blue-600">
+          <Upload className="w-6 h-6" />
+          <span className="mt-2 text-sm">Select Image</span>
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileSelect}
+          />
+        </label>
+      </div>
     </div>
+  );
+};
 
-    <header>
-        <h1 id="page-title">My Social Media Profile</h1>
-        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-    </header>
+const SocialProfileEditor = () => {
+  const [profiles, setProfiles] = useState([]);
+  const [currentProfile, setCurrentProfile] = useState({
+    platform: '',
+    url: '',
+    image: null
+  });
 
-    <div class="container" id="social-cards-container"></div>
+  const handleAddProfile = useCallback(() => {
+    if (currentProfile.platform && currentProfile.url) {
+      setProfiles(prev => [...prev, { ...currentProfile }]);
+      setCurrentProfile({ platform: '', url: '', image: null });
+    }
+  }, [currentProfile]);
 
-    <div class="edit-mode">
-        <h3>Edit Your Profile</h3>
+  const handleImageSelect = useCallback((file) => {
+    setCurrentProfile(prev => ({ ...prev, image: file }));
+  }, []);
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold mb-6">Social Media Profiles</h2>
         
-        <div class="edit-field">
-            <label>Your Name:</label>
-            <input type="text" id="name" placeholder="Enter your name" value="Your Name">
-        </div>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-4">
+            <select 
+              value={currentProfile.platform}
+              onChange={(e) => setCurrentProfile(prev => ({ ...prev, platform: e.target.value }))}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">Select Platform</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+              <option value="twitter">Twitter/X</option>
+              <option value="instagram">Instagram</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="tiktok">TikTok</option>
+              <option value="github">GitHub</option>
+            </select>
 
-        <!-- File Upload for Profile Picture -->
-        <div class="edit-field">
-            <label>Upload Profile Picture:</label>
-            <input type="file" id="profile-pic-upload" accept="image/*">
-        </div>
+            <input
+              type="url"
+              value={currentProfile.url}
+              onChange={(e) => setCurrentProfile(prev => ({ ...prev, url: e.target.value }))}
+              placeholder="Profile URL"
+              className="w-full p-2 border rounded"
+            />
 
-        <div class="edit-field">
-            <label>Support Link URL:</label>
-            <input type="url" id="support-link-url" placeholder="Enter your support link URL">
-        </div>
+            <ImageUploader 
+              onImageSelect={handleImageSelect}
+              currentImage={currentProfile.image}
+            />
 
-        <div class="edit-field">
-            <label>Page Title:</label>
-            <input type="text" id="title" placeholder="Enter your headline" value="My Social Media Profile">
-        </div>
+            <button
+              onClick={handleAddProfile}
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+            >
+              Add Profile
+            </button>
+          </div>
 
-        <div class="edit-field">
-            <label>Your Email:</label>
-            <input type="email" id="email" placeholder="your.email@example.com">
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold mb-4">Added Profiles</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {profiles.map((profile, index) => (
+                <div key={index} className="border rounded-lg p-4 flex items-center space-x-4">
+                  {profile.image && (
+                    <img 
+                      src={URL.createObjectURL(profile.image)}
+                      alt={profile.platform}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  )}
+                  <div>
+                    <h4 className="font-semibold">{profile.platform}</h4>
+                    <a href={profile.url} className="text-blue-500 text-sm truncate block" target="_blank" rel="noopener noreferrer">
+                      {profile.url}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-
-        <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+      </div>
     </div>
+  );
+};
 
-    <script>
-        document.getElementById('profile-pic-upload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Set the uploaded image as the profile picture
-                    document.getElementById('profile-picture').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function saveChanges() {
-            const name = document.getElementById('name').value;
-            const supportLinkUrl = document.getElementById('support-link-url').value;
-
-            // Update name
-            document.getElementById('profile-name').textContent = name;
-
-            // Update support link
-            const supportLink = document.getElementById('support-link');
-            if (supportLinkUrl) {
-                supportLink.href = supportLinkUrl;
-                supportLink.style.display = 'inline-block';
-            } else {
-                supportLink.style.display = 'none';
-            }
-
-            // Update page title
-            const title = document.getElementById('title').value;
-            document.getElementById('page-title').textContent = title;
-            document.title = title;
-
-            // Update email
-            const email = document.getElementById('email').value;
-            const emailLink = document.querySelector('header p a');
-            emailLink.href = `mailto:${email}`;
-            emailLink.textContent = email;
-        }
-    </script>
-</body>
-</html>
+export default SocialProfileEditor;
