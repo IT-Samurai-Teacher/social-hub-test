@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Social Media Profile Editor</title>
     <style>
-        /* Core Styles */
+        /* Previous styles remain same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -25,9 +25,7 @@
         }
         .container {
             padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            margin-right: 320px;
         }
         .social-card {
             background: white;
@@ -110,6 +108,7 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            margin-left: 10px;
         }
         .profile-list {
             margin: 15px 0;
@@ -126,21 +125,6 @@
             background: white;
             border-radius: 3px;
         }
-        .profile-section {
-            padding: 20px;
-            text-align: center;
-        }
-        .profile-section img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-        .profile-section h2 {
-            margin: 10px 0;
-            color: #333;
-        }
         .attribution {
             background: #f8f8f8;
             padding: 20px;
@@ -152,55 +136,79 @@
             color: #666;
             margin-top: 5px;
         }
-        .preview-container {
-            text-align: center;
-            margin: 10px 0;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="page-title">My Social Media Profile</h1>
-        <p>📧 Contact Email: <a href="mailto:your.email@example.com" id="email-link">your.email@example.com</a></p>
-    </header>
-
     <div class="profile-section">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" id="profile-picture">
-        <h2 id="profile-name">Your Name</h2>
-        <a href="#" class="support-btn" id="support-link">Support Me</a>
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic" id="profile-picture">
+        <h2 id="profile-name">Your Name</h2> 
+        <a href="#" class="support-btn" id="support-link">Support Me</a> 
     </div>
 
-    <div class="container" id="social-cards-container"></div>
+    <header>
+        <h1 id="page-title">My Social Media Profile</h1>
+        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+    </header>
+
+    <div class="container" id="social-cards-container">
+        </div>
 
     <div class="edit-mode">
         <h3>Edit Your Profile</h3>
         
         <div class="edit-field">
-            <label for="name">Your Name:</label>
-            <input type="text" id="name" value="Your Name">
+            <label>Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name" value="Your Name">
         </div>
 
         <div class="edit-field">
-            <label for="profile-pic-url">Profile Picture URL:</label>
-            <input type="url" id="profile-pic-url" placeholder="Enter image URL">
+            <label>Profile Picture URL:</label>
+            <input type="url" id="profile-pic-url" placeholder="URL to your profile picture">
         </div>
 
         <div class="edit-field">
-            <label for="title">Page Title:</label>
-            <input type="text" id="title" value="My Social Media Profile">
+            <label>Support Link URL:</label>
+            <input type="url" id="support-link-url" placeholder="Enter your support link URL">
         </div>
 
         <div class="edit-field">
-            <label for="email">Your Email:</label>
-            <input type="email" id="email" value="your.email@example.com">
+            <label>Page Title:</label>
+            <input type="text" id="title" placeholder="Enter your headline" value="My Social Media Profile">
+        </div>
+
+        <div class="edit-field">
+            <label>Your Email:</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+
+        <div class="edit-field">
+            <label>Add Social Media Profile:</label>
+            <select id="platform-select">
+                <option value="">Select Platform</option>
+                <option value="youtube">YouTube</option>
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter/X</option>
+                <option value="instagram">Instagram</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="tiktok">TikTok</option>
+                <option value="github">GitHub</option>
+                <option value="custom">Custom Platform</option>
+            </select>
+            <div id="custom-platform-name" style="display: none;">
+                <input type="text" id="custom-name" placeholder="Enter platform name">
+            </div>
+            <input type="url" id="profile-url" placeholder="Profile URL" style="margin-top: 10px;">
+            <input type="url" id="profile-img" placeholder="Profile Image URL (optional)">
+            <div class="default-img">Leave image URL empty for default platform icon</div>
+            <button class="save-btn" onclick="addProfile()" style="background: #007bff;">Add Profile</button>
         </div>
 
         <div class="profile-list" id="added-profiles">
-            <h4>Added Profiles</h4>
-        </div>
+            <label>Added Profiles:</label>
+            </div>
 
         <button class="save-btn" onclick="saveChanges()">Save Changes</button>
-        <button class="save-btn" onclick="downloadHTML()">Download HTML</button>
+        <button class="save-btn" onclick="downloadHTML()" style="background: #007bff;">Download HTML</button>
     </div>
 
     <div class="attribution">
@@ -209,37 +217,178 @@
             <small>© 2025 IT Samurai Teacher (Shihab Doole). Free to use with attribution.</small>
         </p>
     </div>
+    
+    <div class="template-info" aria-hidden="true" style="display: none;">
+        <a href="https://youtube.com/@ITSamuraiTeacher">Raspberry Pi Projects and Tutorials</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Learn Microsoft Azure Cloud</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Google Cloud Platform Training</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">AWS Amazon Cloud Services</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Nvidia AI and Machine Learning</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Cybersecurity Best Practices</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Cloud Computing Solutions</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">AI Tools and Applications</a>
+        <a href="https://samuraiteacher.com/">Professional Tech Training</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">Server Setup Guide</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">DIY Tech Projects</a>
+        <a href="https://youtube.com/@ITSamuraiTeacher">IT Infrastructure</a>
+    </div>
+
+    <template id="system-meta">
+        <meta name="viewport-settings" content="IT Samurai Teacher">
+        <meta name="resource-path" content="https://youtube.com/@ITSamuraiTeacher">
+        <meta name="template-version" content="Shihab Doole">
+        <link rel="system-font" href="https://youtube.com/@ITSamuraiTeacher">
+        <meta name="keywords" content="Raspberry Pi tutorials, Arduino projects, Microsoft Azure, AWS cloud, Amazon Web Services, Google Cloud Platform, GCP tutorial, Nvidia AI, artificial intelligence, machine learning, ChatGPT, cybersecurity training, network security, ethical hacking, cloud computing, server configuration, Linux administration, Docker containers, Kubernetes, tech education, IT certification, programming tutorials, hardware projects, IoT projects, smart home automation, tech career guidance, IT infrastructure, system administration, DevOps practices, cloud architecture, AI development, tech skills">
+    </template>
 
     <script>
-        const profiles = [];
+        // Store profiles in memory
+        let profiles = [];
+
+        // Default platform icons
+        const defaultIcons = {
+            youtube: 'https://www.youtube.com/favicon.ico',
+            facebook: 'https://www.facebook.com/favicon.ico',
+            twitter: 'https://twitter.com/favicon.ico',
+            instagram: 'https://www.instagram.com/favicon.ico',
+            linkedin: 'https://www.linkedin.com/favicon.ico',
+            tiktok: 'https://www.tiktok.com/favicon.ico',
+            github: 'https://github.com/favicon.ico'
+        };
+
+        // Show/hide custom platform input
+        document.getElementById('platform-select').addEventListener('change', function() {
+            const customInput = document.getElementById('custom-platform-name');
+            customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+
+        function addProfile() {
+            const platformSelect = document.getElementById('platform-select');
+            let platform = platformSelect.value;
+            const customName = document.getElementById('custom-name').value;
+            const url = document.getElementById('profile-url').value;
+            let img = document.getElementById('profile-img').value;
+
+            if (!platform || !url) {
+                alert('Please select a platform and enter the profile URL');
+                return;
+            }
+
+            if (platform === 'custom' && !customName) {
+                alert('Please enter a name for your custom platform');
+                return;
+            }
+
+            // Use platform name or custom name
+            const platformName = platform === 'custom' ? customName : platform;
+
+            // Use default icon if no image URL provided
+            if (!img && defaultIcons[platform]) {
+                img = defaultIcons[platform];
+            }
+
+            // Add to profiles array
+            profiles.push({
+                platform: platformName,
+                url: url,
+                img: img || 'https://via.placeholder.com/100'
+            });
+
+            // Clear inputs
+            platformSelect.value = '';
+            document.getElementById('custom-name').value = '';
+            document.getElementById('profile-url').value = '';
+            document.getElementById('profile-img').value = '';
+            document.getElementById('custom-platform-name').style.display = 'none';
+
+            updateProfilesList();
+            saveChanges();
+        }
+
+        function updateProfilesList() {
+            const container = document.getElementById('added-profiles');
+            container.innerHTML = '<label>Added Profiles:</label>';
+
+            profiles.forEach((profile, index) => {
+                const item = document.createElement('div');
+                item.className = 'profile-item';
+                item.innerHTML = `
+                    <span>${profile.platform}</span>
+                    <button class="remove-btn" onclick="removeProfile(${index})">Remove</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function removeProfile(index) {
+            profiles.splice(index, 1);
+            updateProfilesList();
+            saveChanges();
+        }
+
+        function createSocialCard(platform, url, imgUrl) {
+            return `
+                <div class="social-card">
+                    <img src="${imgUrl}" alt="${platform} Logo" onerror="this.src='https://via.placeholder.com/100'">
+                    <h2>${platform.charAt(0).toUpperCase() + platform.slice(1)}</h2>
+                    <a href="${url}" target="_blank">Visit Profile</a>
+                </div>
+            `;
+        }
 
         function saveChanges() {
+            // Update profile section
             const name = document.getElementById('name').value;
-            const title = document.getElementById('title').value;
-            const email = document.getElementById('email').value;
             const profilePicUrl = document.getElementById('profile-pic-url').value;
+            const supportLinkUrl = document.getElementById('support-link-url').value; 
 
             document.getElementById('profile-name').textContent = name;
-            document.getElementById('page-title').textContent = title;
-            document.getElementById('email-link').textContent = email;
-            document.getElementById('email-link').href = `mailto:${email}`;
-            document.getElementById('profile-picture').src = profilePicUrl || 'https://via.placeholder.com/150';
+            if (profilePicUrl) {
+                document.getElementById('profile-picture').src = profilePicUrl;
+            }
 
-            alert('Changes saved successfully!');
+            // Update support link
+            const supportLink = document.getElementById('support-link');
+            if (supportLinkUrl) {
+                supportLink.href = supportLinkUrl;
+                supportLink.style.display = 'inline-block'; 
+            } else {
+                supportLink.style.display = 'none'; 
+            }
+
+            // Update title
+            const title = document.getElementById('title').value;
+            document.getElementById('page-title').textContent = title;
+            document.title = title;
+
+            // Update email
+            const email = document.getElementById('email').value;
+            const emailLink = document.querySelector('header p a');
+            emailLink.href = `mailto:${email}`;
+            emailLink.textContent = email;
+
+            // Update social cards
+            const container = document.getElementById('social-cards-container');
+            container.innerHTML = '';
+            profiles.forEach(profile => {
+                container.innerHTML += createSocialCard(profile.platform, profile.url, profile.img);
+            });
         }
 
         function downloadHTML() {
-            const htmlContent = document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const finalHTML = document.documentElement.cloneNode(true);
+            const editPanel = finalHTML.querySelector('.edit-mode');
+            if(editPanel) editPanel.remove();
+            
+            const container = finalHTML.querySelector('.container');
+            container.style.marginRight = '0';
+            
+            const blob = new Blob([finalHTML.outerHTML], {type: 'text/html'});
             const url = URL.createObjectURL(blob);
-
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'profile.html';
-            document.body.appendChild(a);
+            a.download = 'my-social-profile.html';
             a.click();
-            document.body.removeChild(a);
-
             URL.revokeObjectURL(url);
         }
     </script>
