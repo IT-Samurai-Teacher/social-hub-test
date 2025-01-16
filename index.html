@@ -1,141 +1,412 @@
-import React, { useState, useCallback } from 'react';
-import { Upload } from 'lucide-react';
-
-const ImageUploader = ({ onImageSelect, currentImage }) => {
-  const [previewUrl, setPreviewUrl] = useState(currentImage || '');
-
-  const handleFileSelect = useCallback((event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-        onImageSelect(file);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, [onImageSelect]);
-
-  return (
-    <div className="mb-4">
-      <div className="flex items-center gap-4">
-        {previewUrl && (
-          <img 
-            src={previewUrl} 
-            alt="Preview" 
-            className="w-12 h-12 rounded-full object-cover"
-          />
-        )}
-        <label className="flex items-center px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600">
-          <Upload className="w-4 h-4 mr-2" />
-          <span>Select Image</span>
-          <input
-            type="file"
-            className="hidden"
-            accept="image/*"
-            onChange={handleFileSelect}
-          />
-        </label>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Social Media Profile Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+            color: #333;
+        }
+        header {
+            background-color: #0077b5;
+            color: white;
+            padding: 20px 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            padding: 20px;
+            margin-right: 320px;
+        }
+        .social-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 300px;
+            margin: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .social-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        .social-card h2 {
+            margin: 10px 0;
+            font-size: 1.5em;
+            color: #0077b5;
+        }
+        .social-card a {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            background-color: #0077b5;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        .edit-mode {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            height: 100%;
+            width: 300px;
+            overflow-y: auto;
+        }
+        .edit-field {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .edit-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .edit-field input, .edit-field select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .edit-field input[type="file"] {
+            padding: 5px;
+        }
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            width: calc(100% - 10px);
+        }
+        .save-btn:hover {
+            background: #45a049;
+        }
+        .remove-btn {
+            background: #ff4444;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .profile-list {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 3px;
+        }
+        .image-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin: 10px 0;
+            border-radius: 50%;
+            display: none;
+        }
+        .attribution {
+            background: #f8f8f8;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+        }
+        .default-img {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic" id="profile-picture">
+        <h2 id="profile-name">Your Name</h2>
+        <a href="#" class="support-btn" id="support-link">Support Me</a>
     </div>
-  );
-};
 
-const SocialProfileEditor = () => {
-  const [profiles, setProfiles] = useState([]);
-  const [currentProfile, setCurrentProfile] = useState({
-    platform: '',
-    url: '',
-    image: null
-  });
+    <header>
+        <h1 id="page-title">My Social Media Profile</h1>
+        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+    </header>
 
-  const handleAddProfile = useCallback(() => {
-    if (currentProfile.platform && currentProfile.url) {
-      setProfiles(prev => [...prev, { ...currentProfile }]);
-      setCurrentProfile({ platform: '', url: '', image: null });
-    }
-  }, [currentProfile]);
+    <div class="container" id="social-cards-container">
+    </div>
 
-  const handleRemoveProfile = useCallback((index) => {
-    setProfiles(prev => prev.filter((_, i) => i !== index));
-  }, []);
-
-  return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="bg-white rounded shadow p-6">
-        <h2 className="text-xl font-bold mb-6">Social Media Profiles</h2>
+    <div class="edit-mode">
+        <h3>Edit Your Profile</h3>
         
-        <div className="space-y-4 mb-6">
-          <select 
-            value={currentProfile.platform}
-            onChange={(e) => setCurrentProfile(prev => ({ ...prev, platform: e.target.value }))}
-            className="w-full p-2 border rounded bg-white"
-          >
-            <option value="">Select Platform</option>
-            <option value="youtube">YouTube</option>
-            <option value="facebook">Facebook</option>
-            <option value="twitter">Twitter/X</option>
-            <option value="instagram">Instagram</option>
-            <option value="linkedin">LinkedIn</option>
-            <option value="tiktok">TikTok</option>
-            <option value="github">GitHub</option>
-          </select>
-
-          <input
-            type="url"
-            value={currentProfile.url}
-            onChange={(e) => setCurrentProfile(prev => ({ ...prev, url: e.target.value }))}
-            placeholder="Profile URL"
-            className="w-full p-2 border rounded"
-          />
-
-          <ImageUploader 
-            onImageSelect={(file) => setCurrentProfile(prev => ({ ...prev, image: file }))}
-            currentImage={currentProfile.image ? URL.createObjectURL(currentProfile.image) : null}
-          />
-
-          <button
-            onClick={handleAddProfile}
-            disabled={!currentProfile.platform || !currentProfile.url}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            Add Profile
-          </button>
+        <div class="edit-field">
+            <label>Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name" value="Your Name">
         </div>
 
-        <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold mb-4">Added Profiles</h3>
-          <div className="space-y-3">
-            {profiles.map((profile, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                <div className="flex items-center gap-3">
-                  {profile.image && (
-                    <img 
-                      src={URL.createObjectURL(profile.image)}
-                      alt={profile.platform}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  )}
-                  <div>
-                    <div className="font-medium">{profile.platform}</div>
-                    <a href={profile.url} className="text-sm text-blue-500 hover:underline truncate max-w-xs block" target="_blank" rel="noopener noreferrer">
-                      {profile.url}
-                    </a>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleRemoveProfile(index)}
-                  className="text-red-500 hover:text-red-600 p-1"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
+        <div class="edit-field">
+            <label>Profile Picture:</label>
+            <input type="file" id="profile-pic-file" accept="image/*" class="mb-2">
+            <img id="profile-pic-preview" class="image-preview">
+            <div class="default-img">Or use URL:</div>
+            <input type="url" id="profile-pic-url" placeholder="URL to your profile picture">
         </div>
-      </div>
+
+        <div class="edit-field">
+            <label>Support Link URL:</label>
+            <input type="url" id="support-link-url" placeholder="Enter your support link URL">
+        </div>
+
+        <div class="edit-field">
+            <label>Page Title:</label>
+            <input type="text" id="title" placeholder="Enter your headline" value="My Social Media Profile">
+        </div>
+
+        <div class="edit-field">
+            <label>Your Email:</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+
+        <div class="edit-field">
+            <label>Add Social Media Profile:</label>
+            <select id="platform-select">
+                <option value="">Select Platform</option>
+                <option value="youtube">YouTube</option>
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter/X</option>
+                <option value="instagram">Instagram</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="tiktok">TikTok</option>
+                <option value="github">GitHub</option>
+                <option value="custom">Custom Platform</option>
+            </select>
+            <div id="custom-platform-name" style="display: none;">
+                <input type="text" id="custom-name" placeholder="Enter platform name">
+            </div>
+            <input type="url" id="profile-url" placeholder="Profile URL" style="margin-top: 10px;">
+            <label>Profile Image:</label>
+            <input type="file" id="profile-img-file" accept="image/*" class="mb-2">
+            <img id="profile-img-preview" class="image-preview">
+            <div class="default-img">Or use URL:</div>
+            <input type="url" id="profile-img" placeholder="Profile Image URL (optional)">
+            <div class="default-img">Leave both empty for default platform icon</div>
+            <button class="save-btn" onclick="addProfile()" style="background: #007bff;">Add Profile</button>
+        </div>
+
+        <div class="profile-list" id="added-profiles">
+            <label>Added Profiles:</label>
+        </div>
+
+        <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+        <button class="save-btn" onclick="downloadHTML()" style="background: #007bff;">Download HTML</button>
     </div>
-  );
-};
 
-export default SocialProfileEditor;
+    <div class="attribution">
+        <p>Template created by <strong>IT Samurai Teacher</strong></p>
+        <p>
+            <small>© 2025 IT Samurai Teacher (Shihab Doole). Free to use with attribution.</small>
+        </p>
+    </div>
+
+    <script>
+        // Store profiles in memory
+        let profiles = [];
+
+        // Default platform icons
+        const defaultIcons = {
+            youtube: 'https://www.youtube.com/favicon.ico',
+            facebook: 'https://www.facebook.com/favicon.ico',
+            twitter: 'https://twitter.com/favicon.ico',
+            instagram: 'https://www.instagram.com/favicon.ico',
+            linkedin: 'https://www.linkedin.com/favicon.ico',
+            tiktok: 'https://www.tiktok.com/favicon.ico',
+            github: 'https://github.com/favicon.ico'
+        };
+
+        // Function to convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Show/hide custom platform input
+        document.getElementById('platform-select').addEventListener('change', function() {
+            const customInput = document.getElementById('custom-platform-name');
+            customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+
+        // Handle profile picture file upload preview
+        document.getElementById('profile-pic-file').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('profile-pic-preview');
+            if (file) {
+                try {
+                    const base64Image = await fileToBase64(file);
+                    preview.src = base64Image;
+                    preview.style.display = 'block';
+                    document.getElementById('profile-pic-url').value = '';
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    alert('Error processing image. Please try again.');
+                }
+            }
+        });
+
+        // Handle profile image file upload preview
+        document.getElementById('profile-img-file').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('profile-img-preview');
+            if (file) {
+                try {
+                    const base64Image = await fileToBase64(file);
+                    preview.src = base64Image;
+                    preview.style.display = 'block';
+                    document.getElementById('profile-img').value = '';
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    alert('Error processing image. Please try again.');
+                }
+            }
+        });
+
+        async function addProfile() {
+            const platformSelect = document.getElementById('platform-select');
+            let platform = platformSelect.value;
+            const customName = document.getElementById('custom-name').value;
+            const url = document.getElementById('profile-url').value;
+            const imgFile = document.getElementById('profile-img-file').files[0];
+            let img = document.getElementById('profile-img').value;
+
+            if (!platform || !url) {
+                alert('Please select a platform and enter the profile URL');
+                return;
+            }
+
+            if (platform === 'custom' && !customName) {
+                alert('Please enter a name for your custom platform');
+                return;
+            }
+
+            // Use platform name or custom name
+            const platformName = platform === 'custom' ? customName : platform;
+
+            // Handle image upload if file is selected
+            if (imgFile) {
+                try {
+                    img = await fileToBase64(imgFile);
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    alert('Error processing image. Please try again.');
+                    return;
+                }
+            } else if (!img && defaultIcons[platform]) {
+                img = defaultIcons[platform];
+            }
+
+            // Add to profiles array
+            profiles.push({
+                platform: platformName,
+                url: url,
+                img: img || 'https://via.placeholder.com/100'
+            });
+
+            // Clear inputs
+            platformSelect.value = '';
+            document.getElementById('custom-name').value = '';
+            document.getElementById('profile-url').value = '';
+            document.getElementById('profile-img').value = '';
+            document.getElementById('profile-img-file').value = '';
+            document.getElementById('profile-img-preview').style.display = 'none';
+            document.getElementById('custom-platform-name').style.display = 'none';
+
+            updateProfilesList();
+            saveChanges();
+        }
+
+        function updateProfilesList() {
+            const container = document.getElementById('added-profiles');
+            container.innerHTML = '<label>Added Profiles:</label>';
+
+            profiles.forEach((profile, index) => {
+                const item = document.createElement('div');
+                item.className = 'profile-item';
+                item.innerHTML = `
+                    <span>${profile.platform}</span>
+                    <button class="remove-btn" onclick="removeProfile(${index})">Remove</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function removeProfile(index) {
+            profiles.splice(index, 1);
+            updateProfilesList();
+            saveChanges();
+        }
+
+        function createSocialCard(platform, url, imgUrl) {
+            return `
+                <div class="social-card">
+                    <img src="${imgUrl}" alt="${platform} Logo" onerror="this.src='https://via.placeholder.com/100'">
+                    <h2>${platform.charAt(0).toUpperCase() + platform.slice(1)}</h2>
+                    <a href="${url}" target="_blank">Visit Profile</a>
+                </div>
+            `;
+        }
+
+        async function saveChanges() {
+            // Update profile section
+            const name = document.getElementById('name').value;
+            const profilePicFile = document.getElementById('profile-pic-file').files[0];
+            const profilePicUrl = document.getElementById('profile-pic-url').value;
+            const supportLinkUrl = document.getElementById('support-link-url').value;
+
+            document.getElementById('profile-name').textContent = name;
+            
+            if (profilePicFile) {
+                try {
+                    const base64Image = await fileToBase64(profilePicFile);
+                    document.getElementById('profile-picture').src = base64Image;
+                } catch (error) {
+                    console.error('Error processing profile picture:', error);
+                }
+            } else if (profilePicUrl) {
+                document.getElementById('profile-picture').src = profilePicUrl;
+            }
+
+            // Update support link
+            const supportLink = document.getElementById('support-link');
+            if (supportLinkUrl) {
+                supportLink.href = supportLinkUrl;
+                supportLink.style.display = 'inline-block';
+            }
