@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Social Media Profile Editor</title>
     <style>
+        /* Core Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -130,9 +131,25 @@
         .image-preview {
             max-width: 100px;
             max-height: 100px;
-            margin: 10px 0;
+            margin: 10px auto;
             border-radius: 50%;
             display: none;
+            object-fit: cover;
+        }
+        .profile-section {
+            padding: 20px;
+            text-align: center;
+        }
+        .profile-section img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .profile-section h2 {
+            margin: 10px 0;
+            color: #333;
         }
         .attribution {
             background: #f8f8f8;
@@ -145,6 +162,10 @@
             color: #666;
             margin-top: 5px;
         }
+        .preview-container {
+            text-align: center;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -156,7 +177,7 @@
 
     <header>
         <h1 id="page-title">My Social Media Profile</h1>
-        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+        <p>📧 Contact Email: <a href="mailto:your.email@example.com" id="email-link">your.email@example.com</a></p>
     </header>
 
     <div class="container" id="social-cards-container">
@@ -173,7 +194,9 @@
         <div class="edit-field">
             <label>Profile Picture:</label>
             <input type="file" id="profile-pic-file" accept="image/*" class="mb-2">
-            <img id="profile-pic-preview" class="image-preview">
+            <div class="preview-container">
+                <img id="profile-pic-preview" class="image-preview">
+            </div>
             <div class="default-img">Or use URL:</div>
             <input type="url" id="profile-pic-url" placeholder="URL to your profile picture">
         </div>
@@ -212,7 +235,9 @@
             <input type="url" id="profile-url" placeholder="Profile URL" style="margin-top: 10px;">
             <label>Profile Image:</label>
             <input type="file" id="profile-img-file" accept="image/*" class="mb-2">
-            <img id="profile-img-preview" class="image-preview">
+            <div class="preview-container">
+                <img id="profile-img-preview" class="image-preview">
+            </div>
             <div class="default-img">Or use URL:</div>
             <input type="url" id="profile-img" placeholder="Profile Image URL (optional)">
             <div class="default-img">Leave both empty for default platform icon</div>
@@ -259,44 +284,73 @@
             });
         }
 
+        // Function to setup image preview
+        function setupImagePreview(fileInputId, previewImgId, targetImgId = null) {
+            document.getElementById(fileInputId).addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        const base64Image = await fileToBase64(file);
+                        const preview = document.getElementById(previewImgId);
+                        preview.src = base64Image;
+                        preview.style.display = 'block';
+                        
+                        if (targetImgId) {
+                            document.getElementById(targetImgId).src = base64Image;
+                        }
+                    } catch (error) {
+                        console.error('Error processing image:', error);
+                        alert('Error processing image. Please try again.');
+                    }
+                }
+            });
+        }
+
+        // Setup image preview handlers
+        setupImagePreview('profile-pic-file', 'profile-pic-preview', 'profile-picture');
+        setupImagePreview('profile-img-file', 'profile-img-preview');
+
+        // Live update handlers
+        document.getElementById('name').addEventListener('input', function() {
+            document.getElementById('profile-name').textContent = this.value;
+        });
+
+        document.getElementById('title').addEventListener('input', function() {
+            document.getElementById('page-title').textContent = this.value;
+            document.title = this.value;
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            const emailLink = document.getElementById('email-link');
+            emailLink.href = `mailto:${this.value}`;
+            emailLink.textContent = this.value;
+        });
+
+        document.getElementById('support-link-url').addEventListener('input', function() {
+            const supportLink = document.getElementById('support-link');
+            supportLink.href = this.value;
+            supportLink.style.display = this.value ? 'inline-block' : 'none';
+        });
+
+        document.getElementById('profile-pic-url').addEventListener('input', function() {
+            const profilePic = document.getElementById('profile-picture');
+            profilePic.src = this.value || 'https://via.placeholder.com/150';
+        });
+
+        document.getElementById('profile-img').addEventListener('input', function() {
+            const preview = document.getElementById('profile-img-preview');
+            if (this.value) {
+                preview.src = this.value;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
         // Show/hide custom platform input
         document.getElementById('platform-select').addEventListener('change', function() {
             const customInput = document.getElementById('custom-platform-name');
             customInput.style.display = this.value === 'custom' ? 'block' : 'none';
-        });
-
-        // Handle profile picture file upload preview
-        document.getElementById('profile-pic-file').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('profile-pic-preview');
-            if (file) {
-                try {
-                    const base64Image = await fileToBase64(file);
-                    preview.src = base64Image;
-                    preview.style.display = 'block';
-                    document.getElementById('profile-pic-url').value = '';
-                } catch (error) {
-                    console.error('Error processing image:', error);
-                    alert('Error processing image. Please try again.');
-                }
-            }
-        });
-
-        // Handle profile image file upload preview
-        document.getElementById('profile-img-file').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('profile-img-preview');
-            if (file) {
-                try {
-                    const base64Image = await fileToBase64(file);
-                    preview.src = base64Image;
-                    preview.style.display = 'block';
-                    document.getElementById('profile-img').value = '';
-                } catch (error) {
-                    console.error('Error processing image:', error);
-                    alert('Error processing image. Please try again.');
-                }
-            }
         });
 
         async function addProfile() {
@@ -317,10 +371,8 @@
                 return;
             }
 
-            // Use platform name or custom name
             const platformName = platform === 'custom' ? customName : platform;
 
-            // Handle image upload if file is selected
             if (imgFile) {
                 try {
                     img = await fileToBase64(imgFile);
@@ -333,7 +385,6 @@
                 img = defaultIcons[platform];
             }
 
-            // Add to profiles array
             profiles.push({
                 platform: platformName,
                 url: url,
@@ -361,52 +412,5 @@
                 const item = document.createElement('div');
                 item.className = 'profile-item';
                 item.innerHTML = `
-                    <span>${profile.platform}</span>
-                    <button class="remove-btn" onclick="removeProfile(${index})">Remove</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function removeProfile(index) {
-            profiles.splice(index, 1);
-            updateProfilesList();
-            saveChanges();
-        }
-
-        function createSocialCard(platform, url, imgUrl) {
-            return `
-                <div class="social-card">
-                    <img src="${imgUrl}" alt="${platform} Logo" onerror="this.src='https://via.placeholder.com/100'">
-                    <h2>${platform.charAt(0).toUpperCase() + platform.slice(1)}</h2>
-                    <a href="${url}" target="_blank">Visit Profile</a>
-                </div>
-            `;
-        }
-
-        async function saveChanges() {
-            // Update profile section
-            const name = document.getElementById('name').value;
-            const profilePicFile = document.getElementById('profile-pic-file').files[0];
-            const profilePicUrl = document.getElementById('profile-pic-url').value;
-            const supportLinkUrl = document.getElementById('support-link-url').value;
-
-            document.getElementById('profile-name').textContent = name;
-            
-            if (profilePicFile) {
-                try {
-                    const base64Image = await fileToBase64(profilePicFile);
-                    document.getElementById('profile-picture').src = base64Image;
-                } catch (error) {
-                    console.error('Error processing profile picture:', error);
-                }
-            } else if (profilePicUrl) {
-                document.getElementById('profile-picture').src = profilePicUrl;
-            }
-
-            // Update support link
-            const supportLink = document.getElementById('support-link');
-            if (supportLinkUrl) {
-                supportLink.href = supportLinkUrl;
-                supportLink.style.display = 'inline-block';
-            }
+                    <div style="display: flex; align-items: center;">
+                        <img src="${profile.img}"
