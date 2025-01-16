@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Social Media Profile Editor</title>
+    <style>
+        /* Styles remain the same */
+    </style>
+</head>
+<body>
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic" id="profile-picture">
+        <h2 id="profile-name">Your Name</h2> 
+        <a href="#" class="support-btn" id="support-link">Support Me</a> 
+    </div>
+
+    <header>
+        <h1 id="page-title">My Social Media Profile</h1>
+        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+    </header>
+
+    <div class="container" id="social-cards-container"></div>
+
+    <div class="edit-mode">
+        <h3>Edit Your Profile</h3>
+        
+        <div class="edit-field">
+            <label>Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name" value="Your Name">
+        </div>
+
+        <!-- File Upload for Profile Picture -->
+        <div class="edit-field">
+            <label>Upload Profile Picture:</label>
+            <input type="file" id="profile-pic-upload" accept="image/*">
+        </div>
+
+        <div class="edit-field">
+            <label>Support Link URL:</label>
+            <input type="url" id="support-link-url" placeholder="Enter your support link URL">
+        </div>
+
+        <div class="edit-field">
+            <label>Page Title:</label>
+            <input type="text" id="title" placeholder="Enter your headline" value="My Social Media Profile">
+        </div>
+
+        <div class="edit-field">
+            <label>Your Email:</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+
+        <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+    </div>
+
+    <script>
+        document.getElementById('profile-pic-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Set the uploaded image as the profile picture
+                    document.getElementById('profile-picture').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function saveChanges() {
+            const name = document.getElementById('name').value;
+            const supportLinkUrl = document.getElementById('support-link-url').value;
+
+            // Update name
+            document.getElementById('profile-name').textContent = name;
+
+            // Update support link
+            const supportLink = document.getElementById('support-link');
+            if (supportLinkUrl) {
+                supportLink.href = supportLinkUrl;
+                supportLink.style.display = 'inline-block';
+            } else {
+                supportLink.style.display = 'none';
+            }
+
+            // Update page title
+            const title = document.getElementById('title').value;
+            document.getElementById('page-title').textContent = title;
+            document.title = title;
+
+            // Update email
+            const email = document.getElementById('email').value;
+            const emailLink = document.querySelector('header p a');
+            emailLink.href = `mailto:${email}`;
+            emailLink.textContent = email;
+        }
+    </script>
+</body>
+</html>
