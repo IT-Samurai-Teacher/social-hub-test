@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Social Media Profile Editor</title>
     <style>
+        /* Core Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -24,7 +25,9 @@
         }
         .container {
             padding: 20px;
-            margin-right: 320px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .social-card {
             background: white;
@@ -57,10 +60,6 @@
             text-decoration: none;
             font-size: 1em;
             margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .social-card a:hover {
-            background-color: #005582;
         }
         .edit-mode {
             position: fixed;
@@ -90,14 +89,6 @@
             margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
-            transition: border-color 0.3s;
-        }
-        .edit-field input:focus, .edit-field select:focus {
-            outline: none;
-            border-color: #0077b5;
-        }
-        .edit-field input[type="file"] {
-            padding: 5px;
         }
         .save-btn {
             background: #4CAF50;
@@ -108,7 +99,6 @@
             cursor: pointer;
             margin: 5px;
             width: calc(100% - 10px);
-            transition: background-color 0.3s;
         }
         .save-btn:hover {
             background: #45a049;
@@ -120,11 +110,6 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            margin-left: 10px;
-            transition: background-color 0.3s;
-        }
-        .remove-btn:hover {
-            background: #cc0000;
         }
         .profile-list {
             margin: 15px 0;
@@ -136,23 +121,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
+            padding: 5px;
             margin: 5px 0;
             background: white;
             border-radius: 3px;
-            transition: transform 0.2s;
-        }
-        .profile-item:hover {
-            transform: translateX(5px);
-        }
-        .image-preview {
-            max-width: 100px;
-            max-height: 100px;
-            margin: 10px auto;
-            border-radius: 50%;
-            display: none;
-            object-fit: cover;
-            border: 2px solid #ddd;
         }
         .profile-section {
             padding: 20px;
@@ -164,11 +136,6 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 15px;
-            border: 3px solid #0077b5;
-            transition: transform 0.3s;
-        }
-        .profile-section img:hover {
-            transform: scale(1.05);
         }
         .profile-section h2 {
             margin: 10px 0;
@@ -188,104 +155,52 @@
         .preview-container {
             text-align: center;
             margin: 10px 0;
-            min-height: 50px;
-        }
-        .support-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0077b5;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .support-btn:hover {
-            background-color: #005582;
         }
     </style>
 </head>
 <body>
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic" id="profile-picture">
-        <h2 id="profile-name">Your Name</h2>
-        <a href="#" class="support-btn" id="support-link">Support Me</a>
-    </div>
-
     <header>
         <h1 id="page-title">My Social Media Profile</h1>
         <p>📧 Contact Email: <a href="mailto:your.email@example.com" id="email-link">your.email@example.com</a></p>
     </header>
 
-    <div class="container" id="social-cards-container">
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" id="profile-picture">
+        <h2 id="profile-name">Your Name</h2>
+        <a href="#" class="support-btn" id="support-link">Support Me</a>
     </div>
+
+    <div class="container" id="social-cards-container"></div>
 
     <div class="edit-mode">
         <h3>Edit Your Profile</h3>
         
         <div class="edit-field">
-            <label>Your Name:</label>
-            <input type="text" id="name" placeholder="Enter your name" value="Your Name">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" value="Your Name">
         </div>
 
         <div class="edit-field">
-            <label>Profile Picture:</label>
-            <input type="file" id="profile-pic-file" accept="image/*" class="mb-2">
-            <div class="preview-container">
-                <img id="profile-pic-preview" class="image-preview">
-            </div>
-            <div class="default-img">Or use URL:</div>
-            <input type="url" id="profile-pic-url" placeholder="URL to your profile picture">
+            <label for="profile-pic-url">Profile Picture URL:</label>
+            <input type="url" id="profile-pic-url" placeholder="Enter image URL">
         </div>
 
         <div class="edit-field">
-            <label>Support Link URL:</label>
-            <input type="url" id="support-link-url" placeholder="Enter your support link URL">
+            <label for="title">Page Title:</label>
+            <input type="text" id="title" value="My Social Media Profile">
         </div>
 
         <div class="edit-field">
-            <label>Page Title:</label>
-            <input type="text" id="title" placeholder="Enter your headline" value="My Social Media Profile">
-        </div>
-
-        <div class="edit-field">
-            <label>Your Email:</label>
-            <input type="email" id="email" placeholder="your.email@example.com">
-        </div>
-
-        <div class="edit-field">
-            <label>Add Social Media Profile:</label>
-            <select id="platform-select">
-                <option value="">Select Platform</option>
-                <option value="youtube">YouTube</option>
-                <option value="facebook">Facebook</option>
-                <option value="twitter">Twitter/X</option>
-                <option value="instagram">Instagram</option>
-                <option value="linkedin">LinkedIn</option>
-                <option value="tiktok">TikTok</option>
-                <option value="github">GitHub</option>
-                <option value="custom">Custom Platform</option>
-            </select>
-            <div id="custom-platform-name" style="display: none;">
-                <input type="text" id="custom-name" placeholder="Enter platform name">
-            </div>
-            <input type="url" id="profile-url" placeholder="Profile URL" style="margin-top: 10px;">
-            <label>Profile Image:</label>
-            <input type="file" id="profile-img-file" accept="image/*" class="mb-2">
-            <div class="preview-container">
-                <img id="profile-img-preview" class="image-preview">
-            </div>
-            <div class="default-img">Or use URL:</div>
-            <input type="url" id="profile-img" placeholder="Profile Image URL (optional)">
-            <div class="default-img">Leave both empty for default platform icon</div>
-            <button class="save-btn" onclick="addProfile()" style="background: #007bff;">Add Profile</button>
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" value="your.email@example.com">
         </div>
 
         <div class="profile-list" id="added-profiles">
-            <label>Added Profiles:</label>
+            <h4>Added Profiles</h4>
         </div>
 
         <button class="save-btn" onclick="saveChanges()">Save Changes</button>
-        <button class="save-btn" onclick="downloadHTML()" style="background: #007bff;">Download HTML</button>
+        <button class="save-btn" onclick="downloadHTML()">Download HTML</button>
     </div>
 
     <div class="attribution">
@@ -296,119 +211,37 @@
     </div>
 
     <script>
-        // Store profiles in memory
-        let profiles = [];
+        const profiles = [];
 
-        // Default platform icons
-        const defaultIcons = {
-            youtube: 'https://www.youtube.com/favicon.ico',
-            facebook: 'https://www.facebook.com/favicon.ico',
-            twitter: 'https://twitter.com/favicon.ico',
-            instagram: 'https://www.instagram.com/favicon.ico',
-            linkedin: 'https://www.linkedin.com/favicon.ico',
-            tiktok: 'https://www.tiktok.com/favicon.ico',
-            github: 'https://github.com/favicon.ico'
-        };
+        function saveChanges() {
+            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
+            const email = document.getElementById('email').value;
+            const profilePicUrl = document.getElementById('profile-pic-url').value;
 
-        // Initialize event listeners when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Live name update
-            document.getElementById('name').addEventListener('input', function() {
-                document.getElementById('profile-name').textContent = this.value || 'Your Name';
-            });
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('page-title').textContent = title;
+            document.getElementById('email-link').textContent = email;
+            document.getElementById('email-link').href = `mailto:${email}`;
+            document.getElementById('profile-picture').src = profilePicUrl || 'https://via.placeholder.com/150';
 
-            // Live title update
-            document.getElementById('title').addEventListener('input', function() {
-                const newTitle = this.value || 'My Social Media Profile';
-                document.getElementById('page-title').textContent = newTitle;
-                document.title = newTitle;
-            });
-
-            // Live email update
-            document.getElementById('email').addEventListener('input', function() {
-                const emailValue = this.value || 'your.email@example.com';
-                const emailLink = document.getElementById('email-link');
-                emailLink.href = `mailto:${emailValue}`;
-                emailLink.textContent = emailValue;
-            });
-
-            // Live support link update
-            document.getElementById('support-link-url').addEventListener('input', function() {
-                const supportLink = document.getElementById('support-link');
-                if (this.value) {
-                    supportLink.href = this.value;
-                    supportLink.style.display = 'inline-block';
-                } else {
-                    supportLink.style.display = 'none';
-                }
-            });
-
-            // Profile picture URL update
-            document.getElementById('profile-pic-url').addEventListener('input', function() {
-                const profilePic = document.getElementById('profile-picture');
-                profilePic.src = this.value || 'https://via.placeholder.com/150';
-            });
-
-            // Platform select change
-            document.getElementById('platform-select').addEventListener('change', function() {
-                const customInput = document.getElementById('custom-platform-name');
-                customInput.style.display = this.value === 'custom' ? 'block' : 'none';
-            });
-
-            // Setup file upload previews
-            setupFileUploadPreview('profile-pic-file', 'profile-pic-preview', 'profile-picture');
-            setupFileUploadPreview('profile-img-file', 'profile-img-preview');
-        });
-
-        // Function to handle file upload preview
-        function setupFileUploadPreview(inputId, previewId, targetId = null) {
-            document.getElementById(inputId).addEventListener('change', function(e) {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const preview = document.getElementById(previewId);
-                        preview.src = event.target.result;
-                        preview.style.display = 'block';
-
-                        if (targetId) {
-                            document.getElementById(targetId).src = event.target.result;
-                        }
-                    };
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
+            alert('Changes saved successfully!');
         }
 
-        // Function to convert file to base64
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'profile.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            URL.revokeObjectURL(url);
         }
-
-        async function addProfile() {
-            const platformSelect = document.getElementById('platform-select');
-            let platform = platformSelect.value;
-            const customName = document.getElementById('custom-name').value;
-            const url = document.getElementById('profile-url').value;
-            const imgFile = document.getElementById('profile-img-file').files[0];
-            let img = document.getElementById('profile-img').value;
-
-            if (!platform || !url) {
-                alert('Please select a platform and enter the profile URL');
-                return;
-            }
-
-            if (platform === 'custom' && !customName) {
-                alert('Please enter a name for your custom platform');
-                return;
-            }
-
-            const platformName = platform === 'custom' ? customName : platform;
-
-            if (imgFile) {
-                try {
-                    img = await fileTo
+    </script>
+</body>
+</html>
