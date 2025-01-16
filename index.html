@@ -135,6 +135,15 @@
             color: #666;
             margin-top: 5px;
         }
+        @media screen and (max-width: 768px) {
+            .edit-mode {
+                width: 100%;
+                position: static;
+            }
+            .container {
+                margin-right: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -146,7 +155,7 @@
 
     <header>
         <h1 id="page-title">My Social Media Profile</h1>
-        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+        <p>📧 Contact Email: <a href="mailto:your.email@example.com" id="contact-email">your.email@example.com</a></p>
     </header>
 
     <div class="container" id="social-cards-container">
@@ -154,7 +163,7 @@
 
     <div class="edit-mode">
         <h3>Edit Your Profile</h3>
-        
+
         <div class="edit-field">
             <label>Your Name:</label>
             <input type="text" id="name" placeholder="Enter your name" value="Your Name">
@@ -218,7 +227,8 @@
     </div>
 
     <script>
-        let profiles = [];
+        let profiles = JSON.parse(localStorage.getItem('profiles')) || [];
+
         const defaultIcons = {
             youtube: 'https://www.youtube.com/favicon.ico',
             facebook: 'https://www.facebook.com/favicon.ico',
@@ -236,39 +246,23 @@
 
         function addProfile() {
             const platformSelect = document.getElementById('platform-select');
-            let platform = platformSelect.value;
+            const platform = platformSelect.value;
             const customName = document.getElementById('custom-name').value;
             const url = document.getElementById('profile-url').value;
-            let img = document.getElementById('profile-img').value;
+            const img = document.getElementById('profile-img').value || defaultIcons[platform] || 'https://via.placeholder.com/100';
 
             if (!platform || !url) {
                 alert('Please select a platform and enter the profile URL');
                 return;
             }
 
-            if (platform === 'custom' && !customName) {
-                alert('Please enter a name for your custom platform');
-                return;
-            }
-
-            const platformName = platform === 'custom' ? customName : platform;
-
-            if (!img && defaultIcons[platform]) {
-                img = defaultIcons[platform];
-            }
-
             profiles.push({
-                platform: platformName,
-                url: url,
-                img: img || 'https://via.placeholder.com/100'
+                platform: platform === 'custom' ? customName : platform,
+                url,
+                img
             });
 
-            platformSelect.value = '';
-            document.getElementById('custom-name').value = '';
-            document.getElementById('profile-url').value = '';
-            document.getElementById('profile-img').value = '';
-            document.getElementById('custom-platform-name').style.display = 'none';
-
+            localStorage.setItem('profiles', JSON.stringify(profiles));
             updateProfilesList();
             saveChanges();
         }
@@ -276,58 +270,48 @@
         function updateProfilesList() {
             const container = document.getElementById('added-profiles');
             container.innerHTML = '<label>Added Profiles:</label>';
-
             profiles.forEach((profile, index) => {
                 const item = document.createElement('div');
                 item.className = 'profile-item';
-                item.innerHTML = `
-                    <span>${profile.platform}</span>
-                    <button class="remove-btn" onclick="removeProfile(${index})">Remove</button>
-                `;
+                item.innerHTML = `<span>${profile.platform}</span>
+                    <button class="remove-btn" onclick="removeProfile(${index})">Remove</button>`;
                 container.appendChild(item);
             });
         }
 
         function removeProfile(index) {
             profiles.splice(index, 1);
+            localStorage.setItem('profiles', JSON.stringify(profiles));
             updateProfilesList();
             saveChanges();
         }
 
         function createSocialCard(platform, url, imgUrl) {
-            return `
-                <div class="social-card">
-                    <img src="${imgUrl}" alt="${platform} Logo" onerror="this.src='https://via.placeholder.com/100'">
-                    <h2>${platform.charAt(0).toUpperCase() + platform.slice(1)}</h2>
-                    <a href="${url}" target="_blank">Visit Profile</a>
-                </div>
-            `;
+            return `<div class="social-card">
+                <img src="${imgUrl}" alt="${platform} Logo" onerror="this.src='https://via.placeholder.com/100'">
+                <h2>${platform.charAt(0).toUpperCase() + platform.slice(1)}</h2>
+                <a href="${url}" target="_blank">Visit Profile</a>
+            </div>`;
         }
 
         function saveChanges() {
             const name = document.getElementById('name').value;
             const profilePicUrl = document.getElementById('profile-pic-url').value;
-            const supportLinkUrl = document.getElementById('support-link-url').value; 
+            const supportLinkUrl = document.getElementById('support-link-url').value;
 
             document.getElementById('profile-name').textContent = name;
-            if (profilePicUrl) {
-                document.getElementById('profile-picture').src = profilePicUrl;
-            }
+            document.getElementById('profile-picture').src = profilePicUrl || 'https://via.placeholder.com/150';
 
             const supportLink = document.getElementById('support-link');
-            if (supportLinkUrl) {
-                supportLink.href = supportLinkUrl;
-                supportLink.style.display = 'inline-block'; 
-            } else {
-                supportLink.style.display = 'none'; 
-            }
+            supportLink.href = supportLinkUrl;
+            supportLink.style.display = supportLinkUrl ? 'inline-block' : 'none';
 
             const title = document.getElementById('title').value;
             document.getElementById('page-title').textContent = title;
             document.title = title;
 
             const email = document.getElementById('email').value;
-            const emailLink = document.querySelector('header p a');
+            const emailLink = document.getElementById('contact-email');
             emailLink.href = `mailto:${email}`;
             emailLink.textContent = email;
 
@@ -341,12 +325,12 @@
         function downloadHTML() {
             const finalHTML = document.documentElement.cloneNode(true);
             const editPanel = finalHTML.querySelector('.edit-mode');
-            if(editPanel) editPanel.remove();
-            
+            if (editPanel) editPanel.remove();
+
             const container = finalHTML.querySelector('.container');
             container.style.marginRight = '0';
-            
-            const blob = new Blob([finalHTML.outerHTML], {type: 'text/html'});
+
+            const blob = new Blob([finalHTML.outerHTML], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -354,6 +338,11 @@
             a.click();
             URL.revokeObjectURL(url);
         }
+
+        window.onload = () => {
+            updateProfilesList();
+            saveChanges();
+        };
     </script>
 </body>
 </html>
