@@ -3,35 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Create and customize your social media bio link profile. Preview and download the HTML to use on your website.">
-    <meta name="keywords" content="social media bio link, profile generator, link in bio, HTML template">
-    <title>Social Media Bio Link Generator</title>
+    <meta name="description" content="Create a social media profile page with live preview and HTML download.">
+    <meta name="keywords" content="social media profile, live editor, HTML generator, profile customization">
+    <title>Social Media Profile Editor</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
-            color: #333;
-            text-align: center;
+            background: #f4f4f4;
         }
         header {
-            background: #1d4ed8;
+            background-color: #0077b5;
             color: white;
-            padding: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            padding: 20px 0;
         }
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
         }
         .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        .editor, .preview {
             background: white;
+            padding: 20px;
+            margin: 10px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .editor {
+            flex: 1 1 300px;
+        }
+        .preview {
+            flex: 2 1 600px;
+            text-align: center;
         }
         .field {
             margin-bottom: 15px;
@@ -39,12 +47,11 @@
         .field label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
         }
         .field input {
             width: 100%;
             padding: 8px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
         .btn {
@@ -53,148 +60,131 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .btn-add {
-            background: #10b981;
+        .btn-save {
+            background: #4CAF50;
             color: white;
-        }
-        .btn-add:hover {
-            background: #059669;
         }
         .btn-download {
-            background: #3b82f6;
+            background: #0077b5;
             color: white;
+            margin-top: 10px;
         }
-        .btn-download:hover {
-            background: #2563eb;
+        .preview img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
         }
-        .preview {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9fafb;
-            border: 1px dashed #d1d5db;
-            border-radius: 8px;
-        }
-        .link-list li {
-            list-style: none;
+        .preview h2 {
+            color: #0077b5;
             margin: 10px 0;
         }
-        .attribution {
-            margin-top: 30px;
-            padding: 15px;
-            background: #f9fafb;
-            color: #6b7280;
-            font-size: 0.9rem;
+        .preview ul {
+            list-style: none;
+            padding: 0;
+        }
+        .preview ul li {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Social Media Bio Link Generator</h1>
+        <h1>Social Media Profile Editor</h1>
     </header>
     <div class="container">
-        <h2>Create Your Profile</h2>
-        <div class="field">
-            <label for="profile-name">Profile Name:</label>
-            <input type="text" id="profile-name" placeholder="Enter your name">
+        <div class="editor">
+            <h2>Edit Your Profile</h2>
+            <div class="field">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" placeholder="Enter your name" oninput="updatePreview()">
+            </div>
+            <div class="field">
+                <label for="picture">Profile Picture URL:</label>
+                <input type="text" id="picture" placeholder="Enter picture URL" oninput="updatePreview()">
+            </div>
+            <div class="field">
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" oninput="updatePreview()">
+            </div>
+            <div class="field">
+                <label for="social-text">Social Link Text:</label>
+                <input type="text" id="social-text" placeholder="e.g., My YouTube" oninput="updateSocialPreview()">
+            </div>
+            <div class="field">
+                <label for="social-url">Social Link URL:</label>
+                <input type="url" id="social-url" placeholder="e.g., https://youtube.com" oninput="updateSocialPreview()">
+            </div>
+            <button class="btn btn-save" onclick="saveChanges()">Save Changes</button>
+            <button class="btn btn-download" onclick="downloadHTML()">Download HTML</button>
         </div>
-        <div class="field">
-            <label for="profile-pic">Profile Picture URL:</label>
-            <input type="url" id="profile-pic" placeholder="Enter profile picture URL">
+        <div class="preview">
+            <h2>Live Preview</h2>
+            <div id="profile-preview">
+                <h2>Your Name</h2>
+                <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                <p>Email: <span id="preview-email">your.email@example.com</span></p>
+                <ul id="social-links">
+                    <!-- Social links will appear here -->
+                </ul>
+            </div>
         </div>
-        <div class="field">
-            <label for="link-text">Link Text:</label>
-            <input type="text" id="link-text" placeholder="Enter link text (e.g., My YouTube)">
-        </div>
-        <div class="field">
-            <label for="link-url">Link URL:</label>
-            <input type="url" id="link-url" placeholder="Enter link URL (e.g., https://youtube.com)">
-        </div>
-        <button class="btn btn-add" onclick="addLink()">Add Link</button>
-        <ul id="link-list" class="link-list"></ul>
-        <button class="btn btn-download" onclick="downloadHTML()">Download HTML</button>
-    </div>
-    <div class="preview">
-        <h3>Preview:</h3>
-        <div id="preview-container">
-            <!-- Profile preview will go here -->
-        </div>
-    </div>
-    <div class="attribution">
-        <p>Template created by <strong>IT Samurai Teacher</strong>. Free to use with attribution.</p>
     </div>
     <script>
-        const links = [];
-
-        function addLink() {
-            const linkText = document.getElementById("link-text").value;
-            const linkURL = document.getElementById("link-url").value;
-
-            if (!linkText || !linkURL) {
-                alert("Please provide both link text and URL.");
-                return;
-            }
-
-            links.push({ text: linkText, url: linkURL });
-            document.getElementById("link-text").value = "";
-            document.getElementById("link-url").value = "";
-            updateLinkList();
-            updatePreview();
-        }
-
-        function updateLinkList() {
-            const linkList = document.getElementById("link-list");
-            linkList.innerHTML = "";
-            links.forEach(link => {
-                const listItem = document.createElement("li");
-                listItem.innerHTML = `<strong>${link.text}</strong> - <a href="${link.url}" target="_blank">${link.url}</a>`;
-                linkList.appendChild(listItem);
-            });
-        }
-
         function updatePreview() {
-            const profileName = document.getElementById("profile-name").value || "Your Name";
-            const profilePic = document.getElementById("profile-pic").value;
-            const previewContainer = document.getElementById("preview-container");
+            const name = document.getElementById("name").value || "Your Name";
+            const picture = document.getElementById("picture").value || "https://via.placeholder.com/150";
+            const email = document.getElementById("email").value || "your.email@example.com";
 
-            let html = `<h2>${profileName}</h2>`;
-            if (profilePic) {
-                html += `<img src="${profilePic}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">`;
+            document.querySelector("#profile-preview h2").textContent = name;
+            document.querySelector("#profile-preview img").src = picture;
+            document.getElementById("preview-email").textContent = email;
+        }
+
+        function updateSocialPreview() {
+            const text = document.getElementById("social-text").value;
+            const url = document.getElementById("social-url").value;
+
+            if (text && url) {
+                const socialLinks = document.getElementById("social-links");
+                socialLinks.innerHTML = `<li><a href="${url}" target="_blank">${text}</a></li>`;
             }
-            html += "<ul>";
-            links.forEach(link => {
-                html += `<li><a href="${link.url}" target="_blank">${link.text}</a></li>`;
-            });
-            html += "</ul>";
-            previewContainer.innerHTML = html;
+        }
+
+        function saveChanges() {
+            alert("Changes saved! Use the download button to get the HTML file.");
         }
 
         function downloadHTML() {
-            const profileName = document.getElementById("profile-name").value || "Your Name";
-            const profilePic = document.getElementById("profile-pic").value;
+            const name = document.getElementById("name").value || "Your Name";
+            const picture = document.getElementById("picture").value || "https://via.placeholder.com/150";
+            const email = document.getElementById("email").value || "your.email@example.com";
+            const socialText = document.getElementById("social-text").value || "";
+            const socialUrl = document.getElementById("social-url").value || "";
 
-            let htmlContent = `<!DOCTYPE html>
+            let htmlContent = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${profileName} - Social Media Links</title>
+    <title>${name} - Social Media Profile</title>
 </head>
 <body>
-    <h1>${profileName}</h1>`;
-            if (profilePic) {
-                htmlContent += `<img src="${profilePic}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">`;
-            }
-            htmlContent += "<ul>";
-            links.forEach(link => {
-                htmlContent += `<li><a href="${link.url}" target="_blank">${link.text}</a></li>`;
-            });
-            htmlContent += "</ul></body></html>";
+    <h1>${name}</h1>
+    <img src="${picture}" alt="Profile Picture">
+    <p>Email: ${email}</p>
+    <ul>
+        ${socialText && socialUrl ? `<li><a href="${socialUrl}" target="_blank">${socialText}</a></li>` : ""}
+    </ul>
+</body>
+</html>`;
 
             const blob = new Blob([htmlContent], { type: "text/html" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "social-media-profile.html";
+            a.download = "social-profile.html";
             a.click();
             URL.revokeObjectURL(url);
         }
