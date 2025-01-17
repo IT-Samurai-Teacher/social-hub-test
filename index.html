@@ -3,135 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Create and customize your social media profile with the Interactive Social Media Profile Editor by IT Samurai Teacher. Add platforms, manage profiles, and enhance your online presence.">
-    <meta name="keywords" content="social media editor, profile customization, IT Samurai Teacher, online tools, YouTube, LinkedIn, Twitter, GitHub, Facebook, Instagram, profile management, tech tutorials">
-    <meta name="author" content="IT Samurai Teacher">
-    <title>Interactive Social Media Profile Editor</title>
+    <meta name="description" content="Create and customize your social media bio link profile. Preview and download the HTML to use on your website.">
+    <meta name="keywords" content="social media bio link, profile generator, link in bio, HTML template">
+    <title>Social Media Bio Link Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #f0f8ff, #d6eaf8);
-            text-align: center;
+            background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
             color: #333;
+            text-align: center;
         }
         header {
-            background: linear-gradient(135deg, #0077b5, #005f91);
+            background: #1d4ed8;
             color: white;
-            padding: 20px 0;
-            border-bottom: 5px solid #004d73;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         header h1 {
             margin: 0;
-            font-size: 2.8em;
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-        }
-        header p {
-            font-size: 1.2em;
-            font-weight: 400;
-        }
-        a {
-            text-decoration: none;
-            color: #004d73;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .profile-section {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: inline-block;
-            margin: 20px auto;
-            width: 90%;
-            max-width: 400px;
-        }
-        .profile-section img {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            border: 5px solid #0077b5;
-        }
-        .profile-section h2 {
-            color: #0077b5;
-            font-size: 1.8em;
-            margin: 10px 0;
+            font-size: 2.5rem;
         }
         .container {
-            padding: 20px;
             max-width: 800px;
-            margin: 0 auto;
-        }
-        .social-card {
-            background: #ffffff;
+            margin: 20px auto;
             padding: 20px;
-            border-radius: 10px;
+            background: white;
+            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            width: 300px;
-            margin: 15px;
-            text-align: center;
         }
-        .social-card img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
+        .field {
             margin-bottom: 15px;
         }
-        .social-card h2 {
-            font-size: 1.5em;
-            margin: 10px 0;
-            color: #0077b5;
+        .field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
-        .edit-mode {
-            background: #ffffff;
-            border-left: 5px solid #0077b5;
-            padding: 20px;
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 300px;
-            height: 100%;
-            box-shadow: -5px 0 6px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
+        .field input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-add {
+            background: #10b981;
+            color: white;
+        }
+        .btn-add:hover {
+            background: #059669;
+        }
+        .btn-download {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-download:hover {
+            background: #2563eb;
+        }
+        .preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 8px;
+        }
+        .link-list li {
+            list-style: none;
+            margin: 10px 0;
         }
         .attribution {
-            background: #f9f9f9;
+            margin-top: 30px;
             padding: 15px;
-            margin-top: 20px;
-            border-top: 2px solid #ddd;
-        }
-        .attribution p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #555;
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1 id="page-title">Interactive Social Media Profile Editor</h1>
-        <p>📧 Contact Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+        <h1>Social Media Bio Link Generator</h1>
     </header>
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" id="profile-picture">
-        <h2 id="profile-name">Your Name</h2>
-        <a href="#" class="support-btn" id="support-link">Support Me</a>
+    <div class="container">
+        <h2>Create Your Profile</h2>
+        <div class="field">
+            <label for="profile-name">Profile Name:</label>
+            <input type="text" id="profile-name" placeholder="Enter your name">
+        </div>
+        <div class="field">
+            <label for="profile-pic">Profile Picture URL:</label>
+            <input type="url" id="profile-pic" placeholder="Enter profile picture URL">
+        </div>
+        <div class="field">
+            <label for="link-text">Link Text:</label>
+            <input type="text" id="link-text" placeholder="Enter link text (e.g., My YouTube)">
+        </div>
+        <div class="field">
+            <label for="link-url">Link URL:</label>
+            <input type="url" id="link-url" placeholder="Enter link URL (e.g., https://youtube.com)">
+        </div>
+        <button class="btn btn-add" onclick="addLink()">Add Link</button>
+        <ul id="link-list" class="link-list"></ul>
+        <button class="btn btn-download" onclick="downloadHTML()">Download HTML</button>
     </div>
-    <div class="container" id="social-cards-container">
-        <!-- Social cards will appear here -->
-    </div>
-    <div class="edit-mode">
-        <h3>Edit Your Profile</h3>
-        <!-- Edit mode fields -->
+    <div class="preview">
+        <h3>Preview:</h3>
+        <div id="preview-container">
+            <!-- Profile preview will go here -->
+        </div>
     </div>
     <div class="attribution">
-        <p>Template created by <strong>IT Samurai Teacher</strong></p>
-        <p><small>© 2025 IT Samurai Teacher. Free to use with attribution.</small></p>
+        <p>Template created by <strong>IT Samurai Teacher</strong>. Free to use with attribution.</p>
     </div>
+    <script>
+        const links = [];
+
+        function addLink() {
+            const linkText = document.getElementById("link-text").value;
+            const linkURL = document.getElementById("link-url").value;
+
+            if (!linkText || !linkURL) {
+                alert("Please provide both link text and URL.");
+                return;
+            }
+
+            links.push({ text: linkText, url: linkURL });
+            document.getElementById("link-text").value = "";
+            document.getElementById("link-url").value = "";
+            updateLinkList();
+            updatePreview();
+        }
+
+        function updateLinkList() {
+            const linkList = document.getElementById("link-list");
+            linkList.innerHTML = "";
+            links.forEach(link => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<strong>${link.text}</strong> - <a href="${link.url}" target="_blank">${link.url}</a>`;
+                linkList.appendChild(listItem);
+            });
+        }
+
+        function updatePreview() {
+            const profileName = document.getElementById("profile-name").value || "Your Name";
+            const profilePic = document.getElementById("profile-pic").value;
+            const previewContainer = document.getElementById("preview-container");
+
+            let html = `<h2>${profileName}</h2>`;
+            if (profilePic) {
+                html += `<img src="${profilePic}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">`;
+            }
+            html += "<ul>";
+            links.forEach(link => {
+                html += `<li><a href="${link.url}" target="_blank">${link.text}</a></li>`;
+            });
+            html += "</ul>";
+            previewContainer.innerHTML = html;
+        }
+
+        function downloadHTML() {
+            const profileName = document.getElementById("profile-name").value || "Your Name";
+            const profilePic = document.getElementById("profile-pic").value;
+
+            let htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${profileName} - Social Media Links</title>
+</head>
+<body>
+    <h1>${profileName}</h1>`;
+            if (profilePic) {
+                htmlContent += `<img src="${profilePic}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">`;
+            }
+            htmlContent += "<ul>";
+            links.forEach(link => {
+                htmlContent += `<li><a href="${link.url}" target="_blank">${link.text}</a></li>`;
+            });
+            htmlContent += "</ul></body></html>";
+
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "social-media-profile.html";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>
